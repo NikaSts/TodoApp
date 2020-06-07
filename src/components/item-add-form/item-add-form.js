@@ -10,6 +10,7 @@ export default class ItemAddForm extends Component {
     };
     this.onLabelChange = this.onLabelChange.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
+    this.resetForm = this.resetForm.bind(this);
   }
 
   onLabelChange(evt) {
@@ -22,6 +23,9 @@ export default class ItemAddForm extends Component {
     evt.preventDefault();
     const { onSubmit } = this.props;
     const { label } = this.state;
+    if (label === '') {
+      return;
+    }
     onSubmit(label);
     this.resetForm();
   }
@@ -47,7 +51,8 @@ export default class ItemAddForm extends Component {
           value={label} />
         <button
           type="button"
-          className="btn btn-outline-info btn-sm float-right">
+          className="btn btn-outline-info btn-sm float-right"
+          onClick={this.resetForm}>
 
           <span className="sr-only">Cancel</span>
           <i className="fa fa-minus" />
