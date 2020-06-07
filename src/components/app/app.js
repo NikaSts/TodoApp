@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 
+import Filters from '../filters';
 import Header from '../header';
+import ItemAddForm from '../item-add-form';
 import SearchPanel from '../search-panel';
 import TodoList from '../todo-list';
-import Filters from '../filters';
 
 import './app.css';
 
+
+const generateId = () => Date.now().toString();
 
 export default class App extends Component {
   constructor() {
@@ -20,6 +23,7 @@ export default class App extends Component {
     };
 
     this.onDeleteBtnClick = this.onDeleteBtnClick.bind(this);
+    this.onSubmitBtnClick = this.onSubmitBtnClick.bind(this);
   }
 
   onDeleteBtnClick(id) {
@@ -30,6 +34,23 @@ export default class App extends Component {
         ...todoData.slice(index + 1),
       ];
 
+      return {
+        todoData: newTodoData,
+      };
+    });
+  }
+
+  onSubmitBtnClick(text) {
+    const newTask = {
+      label: text,
+      important: false,
+      id: generateId(),
+    };
+    this.setState(({ todoData }) => {
+      const newTodoData = [
+        ...todoData,
+        newTask,
+      ];
       return {
         todoData: newTodoData,
       };
@@ -50,6 +71,8 @@ export default class App extends Component {
         <TodoList
           todos={todoData}
           onDeleted={this.onDeleteBtnClick} />
+        <ItemAddForm
+          onSubmit={this.onSubmitBtnClick} />
       </div>
     );
   }
