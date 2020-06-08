@@ -8,7 +8,6 @@ import TodoList from '../todo-list';
 
 import './app.css';
 
-const tasks = ['Drink Coffee', 'Make awesome App', 'Have a lunch'];
 
 const generateId = () => (Date.now() + Math.random()).toString();
 const createTodoItem = (label) => ({
@@ -18,31 +17,45 @@ const createTodoItem = (label) => ({
   id: generateId(),
 });
 
-const getIndex = (items, id) => items.findIndex((item) => item.id === id);
-const updateTask = (id, items, property) => {
-  const index = getIndex(items, id);
-  const oldTask = items[index];
+const getIndex = (tasks, id) => tasks.findIndex((item) => item.id === id);
+
+const updateTask = (id, tasks, property) => {
+  const index = getIndex(tasks, id);
+  const oldTask = tasks[index];
   const newTask = { ...oldTask, [property]: !oldTask[property] };
 
   return [
-    ...items.slice(0, index),
+    ...tasks.slice(0, index),
     newTask,
-    ...items.slice(index + 1),
+    ...tasks.slice(index + 1),
   ];
 };
 
+const filterTasks = (tasksToFilter, filter) => {
+  switch (filter) {
+    case 'active':
+      return tasksToFilter.filter((task) => !task.done);
+    case 'done':
+      return tasksToFilter.filter((task) => task.done);
+    default:
+      return tasksToFilter;
+  }
+};
 
 export default class App extends Component {
   constructor() {
     super();
+    this.tasks = ['Drink Coffee', 'Make awesome App', 'Have a lunch'];
     this.state = {
-      todoTasks: tasks.map((task) => createTodoItem(task)),
+      todoTasks: this.tasks.map((task) => createTodoItem(task)),
+      activeFilter: 'all',
     };
 
     this.onDeleteBtnClick = this.onDeleteBtnClick.bind(this);
     this.onSubmitBtnClick = this.onSubmitBtnClick.bind(this);
     this.onToggleDone = this.onToggleDone.bind(this);
     this.onToggleImportant = this.onToggleImportant.bind(this);
+    this.onFilterChange = this.onFilterChange.bind(this);
   }
 
   onDeleteBtnClick(id) {
@@ -85,10 +98,16 @@ export default class App extends Component {
     }));
   }
 
+  onFilterChange(activeFilter) {
+    this.setState({ activeFilter });
+  }
+
   render() {
-    const { todoTasks } = this.state;
+    const { todoTasks, activeFilter } = this.state;
     const doneCount = todoTasks.filter((task) => task.done).length;
     const todoCount = todoTasks.length - doneCount;
+
+    const visibleTasks = filterTasks(todoTasks, activeFilter);
 
     return (
       <div className="todo-app">
@@ -96,11 +115,13 @@ export default class App extends Component {
 
         <div className="top-panel d-flex">
           <SearchPanel />
-          <Filters />
+          <Filters
+            activeFilter={activeFilter}
+            onFilterChange={this.onFilterChange} />
         </div>
 
         <TodoList
-          todos={todoTasks}
+          todos={visibleTasks}
           onDeleted={this.onDeleteBtnClick}
           onToggleImportant={this.onToggleImportant}
           onToggleDone={this.onToggleDone} />

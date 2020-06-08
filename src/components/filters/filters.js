@@ -1,21 +1,35 @@
 import React from 'react';
 import './filters.css';
 
-const Filters = () => (
-  <div>
-    <button
-      type="button"
-      className="btn btn-info">All
-    </button>
-    <button
-      type="button"
-      className="btn btn-outline-secondary">Active
-    </button>
-    <button
-      type="button"
-      className="btn btn-outline-secondary">Done
-    </button>
-  </div>
-);
+
+const filters = [
+  { name: 'all', label: 'All' },
+  { name: 'active', label: 'Active' },
+  { name: 'done', label: 'Done' },
+];
+const Filters = (props) => {
+  const { activeFilter, onFilterChange } = props;
+  const filterButtons = filters.map(({ name, label }) => {
+    const isActive = name === activeFilter;
+    const classNames = `btn ${isActive ? 'btn-info' : 'btn-outline-info'}`;
+    return (
+      <button
+        type="button"
+        className={classNames}
+        key={name}
+        onClick={() => onFilterChange(name)}
+        onKeyPress={() => onFilterChange(name)}>
+        {label}
+      </button>
+    );
+  });
+
+  return (
+    <div>
+      {filterButtons}
+    </div>
+  );
+};
+
 
 export default Filters;
