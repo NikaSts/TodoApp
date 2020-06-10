@@ -1,4 +1,5 @@
 .todo-list-item {
+  flex-wrap: wrap;
   font-size: 1.25rem;
 }
 
@@ -7,11 +8,17 @@
   margin: 3px;
 }
 
+.todo-list-item button:hover {
+  margin: 4px 3px;
+}
+
 .todo-list-item-label {
-  margin-left: 1.25rem;
+  max-width: 292px;
+  flex-grow: 1;
+  margin: 0;
+  padding: 0 0.75rem 0 1.25rem;
   line-height: 35px;
   cursor: pointer;
-  user-select: none;
 }
 
 .todo-list-item.done .todo-list-item-label {

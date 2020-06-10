@@ -10,18 +10,28 @@ const TodoListItem = (props) => {
 
   const isDone = done ? 'done' : '';
   const isImportant = important ? 'important' : '';
-  const classNames = `todo-list-item ${isDone} ${isImportant}`;
+  const classNames = `d-flex todo-list-item ${isDone} ${isImportant}`;
 
   return (
     <div className={classNames}>
-      <span
+      <p
         className="todo-list-item-label"
         onClick={onToggleDone}
         onKeyPress={onToggleDone}
         role="button"
         tabIndex="0">
         {label}
-      </span>
+      </p>
+
+      <button
+        type="button"
+        className="btn btn-outline-danger btn-sm float-right"
+        onClick={onDeleted}
+        onKeyPress={onDeleted}>
+
+        <span className="sr-only">Set important</span>
+        <i className="fa fa-trash-o" />
+      </button>
 
       <button
         type="button"
@@ -33,15 +43,6 @@ const TodoListItem = (props) => {
         <i className="fa fa-exclamation" />
       </button>
 
-      <button
-        type="button"
-        className="btn btn-outline-danger btn-sm float-right"
-        onClick={onDeleted}
-        onKeyPress={onDeleted}>
-
-        <span className="sr-only">Set important</span>
-        <i className="fa fa-trash-o" />
-      </button>
     </div>
   );
 };
