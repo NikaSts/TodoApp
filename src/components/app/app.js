@@ -42,6 +42,14 @@ const filterTasks = (tasksToFilter, filter) => {
   }
 };
 
+const searchTasks = (items, text) => {
+  if (text.length === 0) {
+    return items;
+  }
+  return items.filter((item) => item.label.toLowerCase().includes(text.toLowerCase()));
+}
+
+
 export default class App extends Component {
   constructor() {
     super();
@@ -49,6 +57,7 @@ export default class App extends Component {
     this.state = {
       todoTasks: this.tasks.map((task) => createTodoItem(task)),
       activeFilter: 'all',
+      searchValue: '',
     };
 
     this.onDeleteBtnClick = this.onDeleteBtnClick.bind(this);
@@ -56,6 +65,7 @@ export default class App extends Component {
     this.onToggleDone = this.onToggleDone.bind(this);
     this.onToggleImportant = this.onToggleImportant.bind(this);
     this.onFilterChange = this.onFilterChange.bind(this);
+    this.onTaskSearch = this.onTaskSearch.bind(this)
   }
 
   onDeleteBtnClick(id) {
@@ -102,19 +112,24 @@ export default class App extends Component {
     this.setState({ activeFilter });
   }
 
+  onTaskSearch(searchValue) {
+    this.setState({ searchValue });
+  }
+
   render() {
-    const { todoTasks, activeFilter } = this.state;
+    const { todoTasks, activeFilter, searchValue } = this.state;
     const doneCount = todoTasks.filter((task) => task.done).length;
     const todoCount = todoTasks.length - doneCount;
 
-    const visibleTasks = filterTasks(todoTasks, activeFilter);
+    const visibleTasks = searchTasks(filterTasks(todoTasks, activeFilter), searchValue);
 
     return (
       <div className="todo-app">
         <Header toDo={todoCount} done={doneCount} />
 
         <div className="top-panel d-flex">
-          <SearchPanel />
+          <SearchPanel
+            onTaskSearch={this.onTaskSearch} />
           <Filters
             activeFilter={activeFilter}
             onFilterChange={this.onFilterChange} />
